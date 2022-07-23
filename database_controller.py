@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException, status, Request, Form, File, UploadF
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+import uvicorn
 from infrastructure.dto.AppDto import AppDto
 from domain.schemas import AppForm 
 from sqlalchemy.orm import Session
@@ -134,7 +135,7 @@ def uniquify(basepath, base_filename):
     path = basepath + filename + extension
 
     while os.path.exists(path):
-        path = basepath + filename + "(" + str(counter) + ")" + extension
+        path = basepath + filename + str(counter) +  extension
         counter += 1
 
     return path
@@ -160,3 +161,6 @@ def get_app_by_id(
     data = get_app(db, id)
     print(data)
     return data
+
+if __name__=="__main__":
+    uvicorn.run("database_controller:app", host='0.0.0.0', port=8000, reload=True, debug=True, workers=3)
